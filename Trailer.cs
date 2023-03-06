@@ -19,6 +19,8 @@ public class Trailer : MonoBehaviour
 
     void MoveTrailer(Vector3 point)
     {
-        transform.position = point;
+        moveDirection = point - transform.position;
+        transform.position += moveDirection * moveSpeed * Time.deltaTime;
+        transform.LookAt(point);
     }
 }
