@@ -12,6 +12,9 @@ public class Player : MonoBehaviour
     Quaternion lookRotation;
     public float turnSpeed;
     public float moveSpeed;
+    List<Vector3> positionHistory = new List<Vector3>();
+    public int gap = 10;
+    public GameObject trailer;
 
     private void Awake()
     {
@@ -32,11 +35,14 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        myRigidbody.AddRelativeForce(Vector3.forward * moveSpeed * Time.deltaTime);
-
         Vector3 rbForward = myRigidbody.transform.forward;
         Vector3 torque = Vector3.Cross(rbForward, moveDirection ) * turnSpeed * Time.deltaTime;
+        myRigidbody.AddRelativeForce(Vector3.forward * moveSpeed * Time.deltaTime);
         myRigidbody.AddTorque(torque);
+
+        positionHistory.Insert(0, transform.position);
+        Vector3 point = positionHistory[Mathf.Min(gap, positionHistory.Count - 1)];
+        trailer.SendMessage("MoveTrailer", point);
     }
 
     void MoveInput(InputAction.CallbackContext context)
