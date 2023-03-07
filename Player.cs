@@ -10,10 +10,10 @@ public class Player : MonoBehaviour
     Rigidbody myRigidbody;
     Vector3 moveDirection;
     Quaternion lookRotation;
+    List<Vector3> positionHistory = new List<Vector3>();
+    List<GameObject> trailerChain = new List<GameObject>();
     public float turnSpeed;
     public float moveSpeed;
-    List<Vector3> positionHistory = new List<Vector3>();
-    List<Vector3> torqueHistory = new List<Vector3>();
     public int gap;
     public GameObject trailer;
 
@@ -34,6 +34,12 @@ public class Player : MonoBehaviour
         inputActions.Disable();
     }
 
+    private void Start()
+    {
+        myRigidbody.AddRelativeForce(Vector3.forward * 5, ForceMode.Impulse);
+        StartCoroutine(AddChain());
+    }
+
     private void Update()
     {
         Vector3 rbForward = myRigidbody.transform.forward;
@@ -41,12 +47,15 @@ public class Player : MonoBehaviour
         myRigidbody.AddRelativeForce(Vector3.forward * moveSpeed * Time.deltaTime);
         myRigidbody.AddTorque(torque);
 
-        torqueHistory.Insert(0, torque);
         positionHistory.Insert(0, transform.position);
-        Vector3 point = positionHistory[Mathf.Min(gap, positionHistory.Count - 1)];
-        Vector3 force = torqueHistory[Mathf.Min(gap, torqueHistory.Count - 1)];
-        trailer.SendMessage("TurnTrailer", force);
-        trailer.SendMessage("MoveTrailer", point);
+
+        int index = 0;
+        foreach (var part in trailerChain)
+        {
+            Vector3 point = positionHistory[Mathf.Min(index * gap, positionHistory.Count - 1)];
+            part.SendMessage("MoveTrailer", point);
+            index++;
+        }
     }
 
     void MoveInput(InputAction.CallbackContext context)
@@ -55,6 +64,21 @@ public class Player : MonoBehaviour
         if (moveDirection != Vector3.zero)
         {
             lookRotation = Quaternion.LookRotation(moveDirection);
+        }
+    }
+
+    void GrowChain()
+    {
+        GameObject part = Instantiate(trailer);
+        trailerChain.Add(part);
+    }
+
+    IEnumerator AddChain()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(2);
+            GrowChain();
         }
     }
 }
