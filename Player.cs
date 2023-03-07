@@ -13,7 +13,8 @@ public class Player : MonoBehaviour
     public float turnSpeed;
     public float moveSpeed;
     List<Vector3> positionHistory = new List<Vector3>();
-    public int gap = 10;
+    List<Vector3> torqueHistory = new List<Vector3>();
+    public int gap;
     public GameObject trailer;
 
     private void Awake()
@@ -40,8 +41,11 @@ public class Player : MonoBehaviour
         myRigidbody.AddRelativeForce(Vector3.forward * moveSpeed * Time.deltaTime);
         myRigidbody.AddTorque(torque);
 
+        torqueHistory.Insert(0, torque);
         positionHistory.Insert(0, transform.position);
         Vector3 point = positionHistory[Mathf.Min(gap, positionHistory.Count - 1)];
+        Vector3 force = torqueHistory[Mathf.Min(gap, torqueHistory.Count - 1)];
+        trailer.SendMessage("TurnTrailer", force);
         trailer.SendMessage("MoveTrailer", point);
     }
 

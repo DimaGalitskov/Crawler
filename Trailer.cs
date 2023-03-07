@@ -21,6 +21,10 @@ public class Trailer : MonoBehaviour
     {
         moveDirection = point - transform.position;
         transform.position += moveDirection * moveSpeed * Time.deltaTime;
-        transform.LookAt(point);
+    }
+
+    void TurnTrailer(Vector3 force)
+    {
+        myRigidbody.AddTorque(force);
     }
 }
