@@ -5,6 +5,7 @@ using UnityEngine;
 public class Reward : MonoBehaviour
 {
     GameObject player;
+    GameObject gameController;
     Vector3 moveDirection;
     Quaternion lookRotation;
     public float turnSpeed;
@@ -13,6 +14,7 @@ public class Reward : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+        gameController = GameObject.FindGameObjectWithTag("GameController");
     }
 
     private void OnTriggerEnter(Collider other)
@@ -20,6 +22,8 @@ public class Reward : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             other.SendMessage("GrowChain");
+            gameController.SendMessage("SpawnReward");
+            Destroy(gameObject);
         }
     }
 }
