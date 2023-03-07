@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     public float turnSpeed;
     public float moveSpeed;
     public int gap;
+    public int initialGap;
     public GameObject trailer;
 
     private void Awake()
@@ -52,7 +53,7 @@ public class Player : MonoBehaviour
         int index = 0;
         foreach (var part in trailerChain)
         {
-            Vector3 point = positionHistory[Mathf.Min(index * gap, positionHistory.Count - 1)];
+            Vector3 point = positionHistory[Mathf.Min(initialGap + index * gap, positionHistory.Count - 1)];
             part.SendMessage("MoveTrailer", point);
             index++;
         }
