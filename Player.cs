@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     CrawlerInput inputActions;
     Rigidbody myRigidbody;
     Vector3 moveDirection;
+    Vector3 startLocation;
     Quaternion lookRotation;
     List<Vector3> positionHistory = new List<Vector3>();
     List<GameObject> trailerChain = new List<GameObject>();
@@ -37,7 +38,9 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        startLocation = transform.position;
         myRigidbody.AddRelativeForce(Vector3.forward * 5, ForceMode.Impulse);
+        StartCoroutine(CreateChain());
     }
 
     private void Update()
@@ -69,8 +72,15 @@ public class Player : MonoBehaviour
 
     void GrowChain()
     {
-        GameObject part = Instantiate(trailer);
+        GameObject part = Instantiate(trailer, startLocation, trailer.transform.rotation);
         trailerChain.Add(part);
+    }
+
+    void CutChain()
+    {
+        GameObject part = trailerChain[trailerChain.Count - 1];
+        trailerChain.Remove(part);
+        Destroy(part);
     }
 
     IEnumerator AddChain()
@@ -79,6 +89,17 @@ public class Player : MonoBehaviour
         {
             yield return new WaitForSeconds(2);
             GrowChain();
+        }
+    }
+
+    IEnumerator CreateChain()
+    {
+        int i = 0;
+        while (i<20)
+        {
+            yield return new WaitForSeconds(.2f);
+            GrowChain();
+            i++;
         }
     }
 }
