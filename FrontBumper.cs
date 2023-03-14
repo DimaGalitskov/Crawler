@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class FrontBumper : MonoBehaviour
 {
-    // Start is called before the first frame update
+    GameObject player;
+    GameObject gameController;
+
     void Start()
     {
-        
+        player = GameObject.FindGameObjectWithTag("Player");
+        gameController = GameObject.FindGameObjectWithTag("GameController");
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        
+        if (other.CompareTag("Obstacle"))
+        {
+            player.SendMessage("ObstacleCollision");
+            Destroy(gameObject);
+        }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -81,6 +82,11 @@ public class Player : MonoBehaviour
         GameObject part = trailerChain[trailerChain.Count - 1];
         trailerChain.Remove(part);
         Destroy(part);
+    }
+
+    void ObstacleCollision()
+    {
+        Destroy(gameObject);
     }
 
     IEnumerator AddChain()
