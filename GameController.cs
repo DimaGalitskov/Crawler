@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    public GameObject reward;
+    public GameObject pickup;
+    public GameObject target;
     public float spawnRangeX;
     public float spawnRangeZ;
     public float spawnSize;
 
     private void Start()
     {
-        SpawnReward();
     }
 
-    void SpawnReward()
+    void SpawnReward(GameObject reward)
     {
         Vector3 position = FindFreePosition(Vector3.zero, spawnRangeX, spawnRangeZ, spawnSize, 10);
         Instantiate(reward, position, reward.transform.rotation);
