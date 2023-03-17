@@ -43,7 +43,6 @@ public class Player : MonoBehaviour
     {
         startLocation = transform.position;
         myRigidbody.AddRelativeForce(Vector3.forward * 5, ForceMode.Impulse);
-        StartCoroutine(CreateChain());
     }
 
     private void Update()
