@@ -25,6 +25,8 @@ public class Player : MonoBehaviour
         myRigidbody = GetComponent<Rigidbody>();
         inputActions = new CrawlerInput();
         inputActions.Player.Move.started += MoveInput;
+        inputActions.Player.Move.performed += MoveInput;
+        inputActions.Player.Move.canceled += MoveInput;
     }
 
     private void OnEnable()
@@ -47,9 +49,9 @@ public class Player : MonoBehaviour
     private void Update()
     {
         Vector3 rbForward = myRigidbody.transform.forward;
-        Vector3 torque = Vector3.Cross(rbForward, moveDirection ) * turnSpeed * Time.deltaTime;
+        Vector3 torque = moveDirection * turnSpeed * Time.deltaTime;
         myRigidbody.AddRelativeForce(Vector3.forward * moveSpeed * Time.deltaTime);
-        myRigidbody.AddTorque(torque);
+        myRigidbody.AddRelativeTorque(torque);
 
         positionHistory.Insert(0, transform.position);
 
@@ -64,7 +66,7 @@ public class Player : MonoBehaviour
 
     void MoveInput(InputAction.CallbackContext context)
     {
-        moveDirection = new Vector3(context.ReadValue<Vector2>().x, 0, context.ReadValue<Vector2>().y);
+        moveDirection = new Vector3(0, context.ReadValue<Vector2>().x, 0);
         if (moveDirection != Vector3.zero)
         {
             lookRotation = Quaternion.LookRotation(moveDirection);
