@@ -23,6 +23,7 @@ public class Pickup : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             other.SendMessage("GrowChain");
+            gameController.SendMessage("UpdateScore");
             Destroy(gameObject);
         }
     }

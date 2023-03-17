@@ -1,17 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameController : MonoBehaviour
 {
     public GameObject pickup;
     public GameObject target;
+    public TextMeshProUGUI playerScoreUI;
     public float spawnRangeX;
     public float spawnRangeZ;
     public float spawnSize;
+    int playerScore = 0;
 
     private void Start()
     {
+        UpdateScore();
+    }
+
+    void UpdateScore()
+    {
+        var step = 10;
+        playerScore += step;
+        playerScoreUI.SetText("Score: " + playerScore);
     }
 
     void SpawnReward(GameObject reward)
