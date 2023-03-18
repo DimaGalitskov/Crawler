@@ -6,6 +6,7 @@ public class Pickup : MonoBehaviour
 {
     public float power;
     public float coneAngle;
+    public ParticleSystem particle;
     GameObject player;
     GameObject gameController;
     Rigidbody myRigidBody;
@@ -24,6 +25,7 @@ public class Pickup : MonoBehaviour
         {
             other.SendMessage("GrowChain");
             gameController.SendMessage("UpdateScore");
+            Instantiate(particle, transform.position, particle.transform.rotation);
             Destroy(gameObject);
         }
     }
