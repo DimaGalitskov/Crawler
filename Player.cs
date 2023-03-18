@@ -74,7 +74,9 @@ public class Player : MonoBehaviour
 
     void GrowChain()
     {
-        GameObject part = Instantiate(trailer, startLocation, trailer.transform.rotation);
+        int index = trailerChain.Count + 1;
+        Vector3 point = positionHistory[Mathf.Min(initialGap + index * gap, positionHistory.Count - 1)];
+        GameObject part = Instantiate(trailer, point, trailer.transform.rotation);
         trailerChain.Add(part);
     }
 
@@ -88,15 +90,6 @@ public class Player : MonoBehaviour
     void ObstacleCollision()
     {
         Destroy(gameObject);
-    }
-
-    IEnumerator AddChain()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(2);
-            GrowChain();
-        }
     }
 
     IEnumerator CreateChain()
