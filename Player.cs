@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     public float moveSpeed;
     public int gap;
     public int initialGap;
+    public float minTurnSpeed;
     public GameObject trailer;
 
     private void Awake()
@@ -47,20 +48,9 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        Vector3 rbForward = myRigidbody.transform.forward;
-        Vector3 torque = moveDirection * turnSpeed * Time.deltaTime;
-        myRigidbody.AddRelativeForce(Vector3.forward * moveSpeed * Time.deltaTime);
-        myRigidbody.AddRelativeTorque(torque);
-
-        positionHistory.Insert(0, transform.position);
-
-        int index = 0;
-        foreach (var part in trailerChain)
-        {
-            Vector3 point = positionHistory[Mathf.Min(initialGap + index * gap, positionHistory.Count - 1)];
-            part.SendMessage("MoveTrailer", point);
-            index++;
-        }
+        Push();
+        Turn();
+        UpdateChain();
     }
 
     void MoveInput(InputAction.CallbackContext context)
@@ -69,6 +59,32 @@ public class Player : MonoBehaviour
         if (moveDirection != Vector3.zero)
         {
             lookRotation = Quaternion.LookRotation(moveDirection);
+        }
+    }
+
+    void Push()
+    {
+        myRigidbody.AddRelativeForce(Vector3.forward * moveSpeed * Time.deltaTime);
+    }
+
+    void Turn()
+    {
+        float currentSpeed = myRigidbody.velocity.magnitude;
+        float turnSpeedModifier = Mathf.Clamp(currentSpeed / minTurnSpeed, 0, 1);
+        Debug.Log(turnSpeedModifier);
+        Vector3 torque = moveDirection * turnSpeed * turnSpeedModifier * Time.deltaTime;
+        myRigidbody.AddRelativeTorque(torque);
+    }
+
+    void UpdateChain()
+    {
+        positionHistory.Insert(0, transform.position);
+        int index = 0;
+        foreach (var part in trailerChain)
+        {
+            Vector3 point = positionHistory[Mathf.Min(initialGap + index * gap, positionHistory.Count - 1)];
+            part.SendMessage("MoveTrailer", point);
+            index++;
         }
     }
 
