@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+    GameObject gameController;
     CrawlerInput inputActions;
     Rigidbody myRigidbody;
     Vector3 moveDirection;
@@ -29,6 +30,7 @@ public class Player : MonoBehaviour
         inputActions.Player.Move.started += MoveInput;
         inputActions.Player.Move.performed += MoveInput;
         inputActions.Player.Move.canceled += MoveInput;
+        inputActions.Player.Fire.started += FireInput;
     }
 
     private void OnEnable()
@@ -45,6 +47,7 @@ public class Player : MonoBehaviour
     {
         startLocation = transform.position;
         myRigidbody.AddRelativeForce(Vector3.forward * 5, ForceMode.Impulse);
+        gameController = GameObject.FindGameObjectWithTag("GameController");
     }
 
     private void Update()
@@ -120,4 +123,14 @@ public class Player : MonoBehaviour
             index++;
         }
     }
+
+    void FireInput(InputAction.CallbackContext context)
+    {
+        SnakeDead();
+        var thisParticle = Instantiate(particle, transform.position, particle.transform.rotation);
+        Destroy(thisParticle, 1);
+        Destroy(gameObject);
+        gameController.SendMessage("Reset");
+    }
+
 }

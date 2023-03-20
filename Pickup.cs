@@ -25,10 +25,15 @@ public class Pickup : MonoBehaviour
         {
             other.SendMessage("GrowChain");
             gameController.SendMessage("UpdateScore");
-            var thisParticle = Instantiate(particle, transform.position, particle.transform.rotation);
-            Destroy(thisParticle, 1);
-            Destroy(gameObject);
+            RemoveObject();
         }
+    }
+
+    void RemoveObject()
+    {
+        var thisParticle = Instantiate(particle, transform.position, particle.transform.rotation);
+        Destroy(thisParticle, 1);
+        Destroy(gameObject);
     }
 
     private void ThrowSelf()

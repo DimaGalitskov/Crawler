@@ -13,12 +13,19 @@ public class GameController : MonoBehaviour
     public float spawnSize;
     public GameObject player;
     public GameObject spawn;
+    GameObject[] pickups;
     int playerScore = 0;
 
     private void Start()
     {
         UpdateScore();
-        Instantiate(player, spawn.transform.position, player.transform.rotation);
+        SpawnPlayer();
+    }
+
+    void Reset()
+    {
+        Sweep();
+        SpawnPlayer();
     }
 
     void UpdateScore()
@@ -28,51 +35,20 @@ public class GameController : MonoBehaviour
         playerScoreUI.SetText("Score: " + playerScore);
     }
 
-    void SpawnReward(GameObject reward)
+    void SpawnPlayer()
     {
-        Vector3 position = FindFreePosition(Vector3.zero, spawnRangeX, spawnRangeZ, spawnSize, 10);
-        Instantiate(reward, position, reward.transform.rotation);
+        playerScore = 0;
+        UpdateScore();
+        Instantiate(player, spawn.transform.position, player.transform.rotation);
     }
 
-
-    private Vector3 GenerateRandomPosition(Vector3 center, float rangeX, float rangeZ)
+    void Sweep()
     {
-        float randomX = Random.Range(center.x - rangeX / 2, center.x + rangeX / 2);
-        float randomZ = Random.Range(center.z - rangeZ / 2, center.z + rangeZ / 2);
-
-        return new Vector3(randomX, center.y, randomZ);
-    }
-
-
-    private bool IsPositionFree(Vector3 position, float checkRadius)
-    {
-        Collider[] colliders = Physics.OverlapSphere(position, checkRadius);
-
-        if (colliders.Length == 0)
+        pickups = GameObject.FindGameObjectsWithTag("Pickup");
+        foreach (var item in pickups)
         {
-            return true;
+            item.SendMessage("RemoveObject");
         }
-
-        return false;
     }
 
-
-    private Vector3 FindFreePosition(Vector3 center, float rangeX, float rangeZ, float checkRadius, int maxAttempts)
-    {
-        int attempts = 0;
-
-        while (attempts < maxAttempts)
-        {
-            Vector3 randomPosition = GenerateRandomPosition(center, rangeX, rangeZ);
-
-            if (IsPositionFree(randomPosition, checkRadius))
-            {
-                return randomPosition;
-            }
-
-            attempts++;
-        }
-
-        return Vector3.zero; // Return Vector3.zero if no free position is found
-    }
 }
