@@ -25,7 +25,8 @@ public class Pickup : MonoBehaviour
         {
             other.SendMessage("GrowChain");
             gameController.SendMessage("UpdateScore");
-            Instantiate(particle, transform.position, particle.transform.rotation);
+            var thisParticle = Instantiate(particle, transform.position, particle.transform.rotation);
+            Destroy(thisParticle, 1);
             Destroy(gameObject);
         }
     }

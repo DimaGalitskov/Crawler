@@ -11,11 +11,14 @@ public class GameController : MonoBehaviour
     public float spawnRangeX;
     public float spawnRangeZ;
     public float spawnSize;
+    public GameObject player;
+    public GameObject spawn;
     int playerScore = 0;
 
     private void Start()
     {
         UpdateScore();
+        Instantiate(player, spawn.transform.position, player.transform.rotation);
     }
 
     void UpdateScore()

@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
     public int initialGap;
     public float minTurnSpeed;
     public GameObject trailer;
+    public ParticleSystem particle;
 
     private void Awake()
     {
@@ -69,9 +70,8 @@ public class Player : MonoBehaviour
 
     void Turn()
     {
-        float currentSpeed = myRigidbody.velocity.magnitude;
+        float currentSpeed = Vector3.Project(myRigidbody.velocity, myRigidbody.transform.forward).magnitude;
         float turnSpeedModifier = Mathf.Clamp(currentSpeed / minTurnSpeed, 0, 1);
-        Debug.Log(turnSpeedModifier);
         Vector3 torque = moveDirection * turnSpeed * turnSpeedModifier * Time.deltaTime;
         myRigidbody.AddRelativeTorque(torque);
     }
@@ -105,17 +105,19 @@ public class Player : MonoBehaviour
 
     void ObstacleCollision()
     {
+        SnakeDead();
+        var thisParticle = Instantiate(particle, transform.position, particle.transform.rotation);
+        Destroy(thisParticle, 1);
         Destroy(gameObject);
     }
 
-    IEnumerator CreateChain()
+    void SnakeDead()
     {
-        int i = 0;
-        while (i<20)
+        int index = 0;
+        foreach (var part in trailerChain)
         {
-            yield return new WaitForSeconds(.2f);
-            GrowChain();
-            i++;
+            part.SendMessage("SnakeDead");
+            index++;
         }
     }
 }

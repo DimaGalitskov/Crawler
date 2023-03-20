@@ -24,8 +24,8 @@ public class Trailer : MonoBehaviour
         transform.LookAt(point);
     }
 
-    void TurnTrailer(Vector3 force)
+    void SnakeDead()
     {
-        myRigidbody.AddTorque(force);
+        myRigidbody.AddRelativeForce(Vector3.forward * 50, ForceMode.Impulse);
     }
 }
