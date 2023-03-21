@@ -25,6 +25,7 @@ public class GameController : MonoBehaviour
     void Reset()
     {
         Sweep();
+        UpdateScore();
         SpawnPlayer();
     }
 
@@ -38,7 +39,6 @@ public class GameController : MonoBehaviour
     void SpawnPlayer()
     {
         playerScore = 0;
-        UpdateScore();
         Instantiate(player, spawn.transform.position, player.transform.rotation);
     }
 
@@ -50,5 +50,4 @@ public class GameController : MonoBehaviour
             item.SendMessage("RemoveObject");
         }
     }
-
 }

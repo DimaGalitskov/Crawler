@@ -109,9 +109,8 @@ public class Player : MonoBehaviour
     void ObstacleCollision()
     {
         SnakeDead();
-        var thisParticle = Instantiate(particle, transform.position, particle.transform.rotation);
-        Destroy(thisParticle, 1);
-        Destroy(gameObject);
+        Particle();
+        gameController.SendMessage("Reset");
     }
 
     void SnakeDead()
@@ -127,10 +126,15 @@ public class Player : MonoBehaviour
     void FireInput(InputAction.CallbackContext context)
     {
         SnakeDead();
+        Particle();
+        gameController.SendMessage("Reset");
+    }
+
+    void Particle()
+    {
         var thisParticle = Instantiate(particle, transform.position, particle.transform.rotation);
         Destroy(thisParticle, 1);
         Destroy(gameObject);
-        gameController.SendMessage("Reset");
     }
 
 }

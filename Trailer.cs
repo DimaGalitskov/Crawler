@@ -10,6 +10,7 @@ public class Trailer : MonoBehaviour
     Rigidbody myRigidbody;
     public float turnSpeed;
     public float moveSpeed;
+    public ParticleSystem particle;
 
     void Start()
     {
@@ -26,6 +27,20 @@ public class Trailer : MonoBehaviour
 
     void SnakeDead()
     {
+        Push();
+        StartCoroutine( Particle());
+    }
+
+    void Push()
+    {
         myRigidbody.AddRelativeForce(Vector3.forward * 50, ForceMode.Impulse);
+    }
+
+    IEnumerator Particle()
+    {
+        yield return new WaitForSeconds(0.5f + Random.Range(0.5f, 1f));
+        var thisParticle = Instantiate(particle, transform.position, particle.transform.rotation);
+        Destroy(thisParticle, 1);
+        Destroy(gameObject);
     }
 }
